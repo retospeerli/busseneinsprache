@@ -1,100 +1,152 @@
-body {
-  font-family: system-ui, Arial, sans-serif;
-  background: #f5f7fb;
-  margin: 0;
+const $ = (id) => document.getElementById(id);
+
+let tone = "neutral";
+
+document.querySelectorAll(".tone").forEach((btn) => {
+  btn.onclick = () => {
+    tone = btn.dataset.tone;
+    document.querySelectorAll(".tone").forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+  };
+});
+
+function pad2(value) {
+  return String(value).padStart(2, "0");
 }
 
-.container {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 30px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+function populateTimeSelects() {
+  const hourSelect = $("eventHour");
+  const minuteSelect = $("eventMinute");
+
+  for (let h = 0; h < 24; h++) {
+    const option = document.createElement("option");
+    option.value = pad2(h);
+    option.textContent = pad2(h);
+    hourSelect.appendChild(option);
+  }
+
+  for (let m = 0; m < 60; m++) {
+    const option = document.createElement("option");
+    option.value = pad2(m);
+    option.textContent = pad2(m);
+    minuteSelect.appendChild(option);
+  }
+
+  const now = new Date();
+  hourSelect.value = pad2(now.getHours());
+  minuteSelect.value = pad2(now.getMinutes());
 }
 
-h1 {
-  margin-top: 0;
+function setTodayAsDefaultDate() {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = pad2(today.getMonth() + 1);
+  const dd = pad2(today.getDate());
+  $("eventDate").value = `${yyyy}-${mm}-${dd}`;
 }
 
-h2 {
-  margin-top: 28px;
+function formatSwissDate(dateValue) {
+  if (!dateValue) return "[Datum]";
+  const [year, month, day] = dateValue.split("-");
+  return `${day}.${month}.${year}`;
 }
 
-label {
-  display: block;
-  margin-top: 12px;
-  font-size: 14px;
-  font-weight: 500;
+function toneIntro() {
+  if (tone === "happy") {
+    return "Besten Dank vorab für die Prüfung dieses Anliegens.";
+  }
+
+  if (tone === "grumpy") {
+    return "Auch wenn eine solche Bestreitung unnötig aufwändig erscheint, nehme ich hierzu formell Stellung.";
+  }
+
+  return "Hiermit bestreite ich die mir zugestellte Umtriebsentschädigung vollumfänglich.";
 }
 
-input,
-textarea,
-select {
-  width: 100%;
-  padding: 10px;
-  margin-top: 4px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font: inherit;
-  box-sizing: border-box;
+function toneClosing() {
+  if (tone === "happy") {
+    return "Ich danke Ihnen im Voraus für die Prüfung und die schriftliche Bestätigung der Annullierung.";
+  }
+
+  if (tone === "grumpy") {
+    return "Ich danke Ihnen für die Prüfung und erwarte eine schriftliche Bestätigung der Annullierung.";
+  }
+
+  return "Ich fordere daher die vollständige Annullierung der Forderung und eine entsprechende schriftliche Bestätigung.";
 }
 
-textarea {
-  height: 340px;
-  margin-top: 10px;
-  resize: vertical;
+function generate() {
+  const first = $("firstName").value.trim();
+  const last = $("lastName").value.trim();
+  const address = $("address").value.trim();
+  const city = $("city").value.trim();
+
+  const plate = $("plate").value.trim();
+  const date = formatSwissDate($("eventDate").value);
+  const time = `${$("eventHour").value}:${$("eventMinute").value}`;
+  const location = $("location").value.trim();
+  const driver = $("driverName").value.trim();
+
+  const today = new Date().toLocaleDateString("de-CH");
+
+  const driverSentence = driver
+    ? `Fahrzeuglenker war ${driver}.`
+    : "";
+
+  const signatureBlock = [
+    `${first}`,
+    "",
+    `${first} ${last}`.trim(),
+    address,
+    city,
+    "",
+    city ? `${city}, ${today}` : today
+  ]
+    .filter((line, index, arr) => {
+      if (line !== "") return true;
+      const prev = arr[index - 1];
+      const next = arr[index + 1];
+      return prev && next;
+    })
+    .join("\n");
+
+  const text = `Sehr geehrte Damen und Herren
+
+${toneIntro()}
+
+Die Forderung betrifft das Fahrzeug mit dem Kennzeichen ${plate || "[Autokennzeichen]"}, angeblich parkierend am ${date} um ${time} auf dem Parkplatz ${location || "[Ort / Schulareal]"}. ${driverSentence}
+
+Am betreffenden Parkplatz ist keine klare und vollständige Signalisation einer Gebührenpflicht oder der entsprechenden Zahlungsmodalitäten ersichtlich. Die vorhandene Beschilderung beschränkt sich auf ein audienzrichterliches Parkverbot für unberechtigte Drittpersonen. Eine Gebührenpflicht für berechtigte Nutzer ist daraus nicht erkennbar.
+
+Nach den Grundsätzen von Treu und Glauben (Art. 2 ZGB) sowie dem Vertrauensschutz (Art. 9 BV) müssen Gebühren- oder Sanktionsregelungen für Nutzer klar und unmittelbar am Ort der Nutzung erkennbar sein. Diese Voraussetzungen sind vorliegend nicht erfüllt.
+
+Mangels klarer und rechtskonformer Signalisation bestand für mich keine Möglichkeit, eine angebliche Gebührenpflicht zu erkennen oder korrekt zu erfüllen.
+
+${toneClosing()}
+
+Freundliche Grüsse
+
+${signatureBlock}`;
+
+  $("letterText").value = text;
 }
 
-button {
-  margin-top: 10px;
-  margin-right: 10px;
-  padding: 10px 14px;
-  border: none;
-  border-radius: 6px;
-  background: #1d4ed8;
-  color: white;
-  cursor: pointer;
-  font: inherit;
+function copy() {
+  navigator.clipboard.writeText($("letterText").value);
 }
 
-button:hover {
-  background: #1e40af;
+function mail() {
+  const recipient = "sicherheit@seewache.ch";
+  const subject = "Bestreitung Umtriebsentschädigung";
+  const body = $("letterText").value;
+
+  window.location.href =
+    `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
-.tones {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
+populateTimeSelects();
+setTodayAsDefaultDate();
 
-.tone {
-  font-size: 20px;
-  background: #eee;
-  color: black;
-}
-
-.tone.active {
-  background: #dbeafe;
-}
-
-.button-row {
-  margin-top: 12px;
-}
-
-.time-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 4px;
-}
-
-.time-row select {
-  width: auto;
-  min-width: 90px;
-}
-
-.time-row span {
-  font-weight: bold;
-  font-size: 18px;
-}
+$("btnGenerate").onclick = generate;
+$("btnCopy").onclick = copy;
+$("btnMail").onclick = mail;
