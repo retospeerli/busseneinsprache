@@ -3,25 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Umtriebsentschädigung bestreiten</title>
+  <title>Umtriebsentschädigung – Bestreiten / Zurückfordern</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
 
-  <h1>Bestreitung Umtriebsentschädigung</h1>
+  <h1>Umtriebsentschädigung</h1>
 
   <div class="intro-box">
     <h2>Kurzanleitung</h2>
     <ol>
-      <li>Trage deine Personalien und die Angaben zum Parkereignis ein oder passe die bereits eingefügten Beispielangaben an.</li>
-      <li>Wähle bei Bedarf die gewünschte Tonalität.</li>
-      <li>Klicke auf <strong>„Text generieren“</strong>. Der Brieftext wird automatisch erstellt.</li>
+      <li>Wähle zuerst, ob du eine Umtriebsentschädigung <strong>bestreiten</strong> oder eine bereits bezahlte Umtriebsentschädigung <strong>zurückfordern</strong> möchtest.</li>
+      <li>Trage danach deine Angaben und die Angaben zum Parkereignis ein oder passe die bereits eingefügten Beispielangaben an.</li>
+      <li>Klicke auf <strong>„Text generieren“</strong>. Der Text wird automatisch erstellt.</li>
       <li>Lies den generierten Text sorgfältig durch und ergänze oder korrigiere ihn bei Bedarf direkt im Textfeld.</li>
       <li>Klicke erst danach auf <strong>„In Mailprogramm übertragen“</strong>. Dadurch wird dein lokales Mailprogramm oder Outlook mit der vorbereiteten E-Mail geöffnet.</li>
       <li>Die E-Mail wird <strong>nicht automatisch versendet</strong>. Bitte prüfe vor dem Versand im eigenen Mailprogramm nochmals alle Angaben sorgfältig.</li>
     </ol>
+  </div>
+
+  <h2>Vorgehen</h2>
+
+  <div class="mode-row">
+    <button type="button" class="mode active" data-mode="contest">Umtriebsentschädigung bestreiten</button>
+    <button type="button" class="mode" data-mode="refund">Umtriebsentschädigung zurückfordern</button>
   </div>
 
   <h2>Personalien</h2>
@@ -73,7 +80,7 @@
     <button id="btnMail" type="button">In Mailprogramm übertragen</button>
   </div>
 
-  <h2>Brieftext</h2>
+  <h2>Text</h2>
 
   <textarea id="letterText"></textarea>
 
