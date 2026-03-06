@@ -1,76 +1,72 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Umtriebsentschädigung bestreiten</title>
-
-<link rel="stylesheet" href="style.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Umtriebsentschädigung bestreiten</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <div class="container">
 
-<h1>Bestreitung Umtriebsentschädigung</h1>
+  <h1>Bestreitung Umtriebsentschädigung</h1>
 
-<h2>Personalien</h2>
+  <h2>Personalien</h2>
 
-<label>Vorname</label>
-<input id="firstName">
+  <label for="firstName">Vorname</label>
+  <input id="firstName" type="text">
 
-<label>Nachname</label>
-<input id="lastName">
+  <label for="lastName">Nachname</label>
+  <input id="lastName" type="text">
 
-<label>Adresse</label>
-<input id="address">
+  <label for="address">Adresse (optional)</label>
+  <input id="address" type="text">
 
-<label>PLZ / Ort</label>
-<input id="city">
+  <label for="city">PLZ / Ort (optional)</label>
+  <input id="city" type="text">
 
-<h2>Parkereignis</h2>
+  <h2>Parkereignis</h2>
 
-<label>Kennzeichen</label>
-<input id="plate">
+  <label for="plate">Kennzeichen</label>
+  <input id="plate" type="text">
 
-<label>Datum</label>
-<input id="eventDate">
+  <label for="eventDate">Datum</label>
+  <input id="eventDate" type="date">
 
-<label>Uhrzeit</label>
-<input id="eventTime">
+  <label>Uhrzeit</label>
+  <div class="time-row">
+    <select id="eventHour"></select>
+    <span>:</span>
+    <select id="eventMinute"></select>
+  </div>
 
-<label>Ort / Parkplatz</label>
-<input id="location">
+  <label for="location">Ort / Parkplatz</label>
+  <input id="location" type="text" value="Schulhaus Untermosen, Gulmenstrasse 4, 8820 Wädenswil">
 
-<label>Fahrzeuglenker</label>
-<input id="driverName">
+  <label for="driverName">Fahrzeuglenker / Fahrzeuglenkerin (optional)</label>
+  <input id="driverName" type="text">
 
-<h2>Tonalität</h2>
+  <h2>Tonalität</h2>
 
-<div class="tones">
+  <div class="tones">
+    <button type="button" class="tone active" data-tone="neutral">😐</button>
+    <button type="button" class="tone" data-tone="happy">😊</button>
+    <button type="button" class="tone" data-tone="grumpy">😑</button>
+  </div>
 
-<button class="tone active" data-tone="neutral">😐</button>
-<button class="tone" data-tone="happy">😊</button>
-<button class="tone" data-tone="grumpy">😑</button>
+  <div class="button-row">
+    <button id="btnGenerate" type="button">Text generieren</button>
+    <button id="btnCopy" type="button">Kopieren</button>
+    <button id="btnMail" type="button">E-Mail senden</button>
+  </div>
 
-</div>
+  <h2>Brieftext</h2>
 
-<br>
-
-<button id="btnGenerate">Text generieren</button>
-<button id="btnCopy">Kopieren</button>
-<button id="btnMail">E-Mail senden</button>
-
-<h2>Brieftext</h2>
-
-<textarea id="letterText"></textarea>
+  <textarea id="letterText"></textarea>
 
 </div>
 
 <script src="app.js"></script>
-
 </body>
 </html>
