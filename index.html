@@ -1,0 +1,544 @@
+# Parkbusse / Umtriebsentschädigung – Textgenerator
+
+## index.html
+
+```html
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Textgenerator Umtriebsentschädigung</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <main class="wrap">
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Textgenerator Umtriebsentschädigung</h1>
+          <p>Offizieller Einsprache-Text gegen Umtriebsentschädigungen / Parkforderungen – editierbar & diktierbar.</p>
+        </div>
+      </div>
+
+      <div class="meta">
+        <span class="pill">Empfänger im Text: Sehr geehrte Damen und Herren</span>
+        <span class="pill">Vorlage: Bestreitung / Annullierung</span>
+      </div>
+    </header>
+
+    <div class="main">
+      <div class="section">
+
+        <section class="card">
+          <h2>1) Personalien</h2>
+          <p class="desc">Vorname und Nachname werden getrennt erfasst. Unter der Grussformel erscheint automatisch nur der Vorname.</p>
+
+          <div class="formgrid">
+            <label>
+              Vorname
+              <input id="firstName" type="text" placeholder="z.B. Reto" autocomplete="given-name" />
+            </label>
+
+            <label>
+              Nachname
+              <input id="lastName" type="text" placeholder="z.B. Speerli" autocomplete="family-name" />
+            </label>
+
+            <label class="rowspan2">
+              Adresse
+              <input id="address" type="text" placeholder="z.B. Musterstrasse 5" autocomplete="street-address" />
+            </label>
+
+            <label>
+              PLZ
+              <input id="zip" type="text" placeholder="z.B. 8820" autocomplete="postal-code" />
+            </label>
+
+            <label>
+              Ort
+              <input id="city" type="text" placeholder="z.B. Wädenswil" autocomplete="address-level2" />
+            </label>
+          </div>
+
+          <div class="hr"></div>
+
+          <h2>2) Angaben zum Vorfall</h2>
+          <p class="desc">Diese Angaben werden direkt in den Brieftext eingesetzt.</p>
+
+          <div class="formgrid">
+            <label>
+              Autokennzeichen
+              <input id="plate" type="text" placeholder="z.B. ZH 123456" />
+            </label>
+
+            <label>
+              Datum
+              <input id="eventDate" type="text" placeholder="z.B. 09.02.2026" />
+            </label>
+
+            <label>
+              Uhrzeit
+              <input id="eventTime" type="text" placeholder="z.B. 07:35" />
+            </label>
+
+            <label>
+              Ort / Schulareal
+              <input id="location" type="text" placeholder="z.B. Parkplatz Schulhaus Untermosen" />
+            </label>
+
+            <label class="rowspan2">
+              Fahrzeuglenker / Fahrzeuglenkerin
+              <input id="driverName" type="text" placeholder="z.B. Reto Speerli" />
+            </label>
+          </div>
+
+          <div class="hr"></div>
+
+          <h2>3) Tonalität</h2>
+          <p class="desc">Wähle den Stil der Formulierung. Immer höflich und anständig.</p>
+
+          <div class="toneRow" role="group" aria-label="Tonalität">
+            <button type="button" class="toneBtn" data-tone="happy" title="Wertschätzend">😊</button>
+            <button type="button" class="toneBtn active" data-tone="neutral" title="Sachlich">😐</button>
+            <button type="button" class="toneBtn" data-tone="grumpy" title="Deutlich, aber höflich">😑</button>
+            <span class="toneLabel" id="toneLabel">Sachlich</span>
+          </div>
+
+          <div class="actions">
+            <button id="btnGenerate" type="button" class="primary">Text generieren</button>
+            <button id="btnReset" type="button" class="secondary">Zurücksetzen</button>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>4) Brieftext</h2>
+          <p class="desc">Der Text ist frei editierbar. Kopiere ihn oder öffne den Standard-Mailclient.</p>
+
+          <div class="toolbar">
+            <button id="btnCopy" type="button" class="secondary">In Zwischenablage kopieren</button>
+            <button id="btnMail" type="button" class="primary">Per Outlook versenden</button>
+
+            <span id="copyStatus" class="status" aria-live="polite"></span>
+            <span id="mailStatus" class="status" aria-live="polite"></span>
+
+            <span class="spacer"></span>
+
+            <button id="btnDictate" type="button" class="ghost">🎙️ Diktieren</button>
+            <button id="btnStopDictate" type="button" class="ghost" disabled>⏹️ Stop</button>
+            <span id="dictStatus" class="status" aria-live="polite"></span>
+          </div>
+
+          <textarea id="letterText" spellcheck="true"
+            placeholder="Klicke auf ‚Text generieren‘. Danach kannst du hier frei editieren oder diktieren."></textarea>
+
+          <p class="small">Tipp: Cursor ins Textfeld setzen → „Diktieren“ → Text wird am Cursor eingefügt (Chrome/Edge empfohlen).</p>
+        </section>
+      </div>
+
+      <aside class="summary" aria-label="Zusammenfassung">
+        <section class="card">
+          <h3>Zusammenfassung</h3>
+
+          <div class="summaryline">
+            <span>Kennzeichen</span>
+            <strong id="sumPlate">—</strong>
+          </div>
+
+          <div class="summaryline">
+            <span>Datum / Uhrzeit</span>
+            <strong id="sumDateTime">—</strong>
+          </div>
+
+          <div class="summaryline">
+            <span>Ort</span>
+            <strong id="sumLocation">—</strong>
+          </div>
+
+          <div class="hr"></div>
+
+          <p class="small" style="margin:0">
+            Der Standardtext bestreitet die Umtriebsentschädigung vollumfänglich und verlangt die vollständige Annullierung.
+          </p>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
+```
+
+## style.css
+
+```css
+:root{
+  --bg: #f6f8fb;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --muted2:#64748b;
+  --line: #e2e8f0;
+  --line2:#cbd5e1;
+  --primary:#1d4ed8;
+  --primary2:#1e40af;
+  --success:#16a34a;
+  --warning:#b45309;
+  --shadow: 0 10px 30px rgba(15, 23, 42, .08);
+  --radius: 14px;
+}
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  color: var(--text);
+  background: var(--bg);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+               "Apple Color Emoji","Segoe UI Emoji";
+  line-height: 1.45;
+}
+.wrap{ max-width: 1120px; margin: 0 auto; padding: 28px 16px 64px; }
+.topbar{
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  padding: 14px 16px; border: 1px solid var(--line); background: #ffffff;
+  border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.brand{ display:flex; align-items:center; gap:12px; min-width: 240px; }
+.logo{
+  width: 38px; height: 38px; border-radius: 10px;
+  background: linear-gradient(135deg, #1d4ed8, #60a5fa);
+  box-shadow: 0 8px 18px rgba(29,78,216,.22);
+}
+.brand h1{ margin:0; font-size: 18px; letter-spacing: .2px; }
+.brand p{ margin:2px 0 0; color: var(--muted2); font-size: 13px; }
+.meta{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+.pill{
+  display:inline-flex; align-items:center; gap:8px; padding: 8px 10px;
+  border: 1px solid var(--line); background: #f8fafc; border-radius: 999px;
+  font-size: 13px; color: var(--muted);
+}
+.main{ margin-top: 16px; display:grid; grid-template-columns: 1.35fr .65fr; gap: 16px; align-items:start; }
+.section{ display:grid; gap: 16px; }
+.card{
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 18px;
+}
+.card h2{ margin:0 0 8px; font-size: 16px; }
+.card h3{ margin:0 0 10px; font-size: 14px; color: var(--muted); font-weight: 700; letter-spacing: .2px; text-transform: uppercase; }
+.desc{ margin:0 0 14px; color: var(--muted2); font-size: 13.5px; }
+.formgrid{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+label{ display:flex; flex-direction:column; gap: 6px; color: var(--muted); font-size: 13px; }
+input, textarea{
+  width:100%; padding: 11px 12px; border: 1px solid var(--line2);
+  border-radius: 12px; background:#ffffff; color: var(--text); font-size: 14px;
+}
+input::placeholder, textarea::placeholder{ color: #94a3b8; }
+input:focus, textarea:focus{ outline: 3px solid rgba(29,78,216,.18); border-color: rgba(29,78,216,.55); }
+.rowspan2{ grid-column: span 2; }
+.hr{ height:1px; background: var(--line); margin: 14px 0; }
+.toneRow{
+  display:flex; align-items:center; gap:10px; padding: 10px 12px; border: 1px solid var(--line);
+  border-radius: 12px; background:#f8fafc;
+}
+.toneBtn{
+  width: 42px; height: 38px; border-radius: 12px; border: 1px solid var(--line2);
+  background:#ffffff; cursor:pointer; font-size: 18px; line-height: 1;
+  transition: transform .04s ease, background .15s ease, border-color .15s ease;
+}
+.toneBtn:hover{ background:#f1f5f9; }
+.toneBtn:active{ transform: translateY(1px); }
+.toneBtn.active{ border-color: rgba(29,78,216,.55); outline: 3px solid rgba(29,78,216,.14); background:#eff6ff; }
+.toneLabel{ color: var(--muted); font-size: 13px; }
+.actions{ display:flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+button{
+  border: 1px solid var(--line2); border-radius: 12px; padding: 10px 12px; cursor:pointer; font-size: 14px;
+  transition: transform .04s ease, filter .15s ease, background .15s ease, border-color .15s ease;
+}
+button.primary{ background: var(--primary); border-color: var(--primary); color:#fff; }
+button.primary:hover{ background: var(--primary2); border-color: var(--primary2); }
+button.secondary{ background: #ffffff; color: var(--text); }
+button.secondary:hover{ background:#f8fafc; }
+button.ghost{ background: transparent; color: var(--muted); }
+button.ghost:hover{ background:#f8fafc; color: var(--text); }
+button:active{ transform: translateY(1px); }
+button:disabled{ opacity:.6; cursor:not-allowed; }
+.toolbar{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom: 10px; }
+.spacer{ flex: 1; }
+.status{ font-size: 13px; color: var(--muted2); min-height: 18px; }
+.status.ok{ color: var(--success); }
+.status.warn{ color: var(--warning); }
+textarea{ min-height: 360px; line-height: 1.5; background:#ffffff; }
+.small{ margin: 10px 0 0; color: var(--muted2); font-size: 13px; }
+.summary{ position: sticky; top: 16px; display:grid; gap: 12px; }
+.summaryline{ display:flex; justify-content:space-between; gap:12px; font-size: 14px; }
+.summaryline span{ color: var(--muted); }
+.summaryline strong{ color: var(--text); }
+@media (max-width: 980px){ .main{ grid-template-columns: 1fr; } .summary{ position: static; } }
+@media (max-width: 720px){ .formgrid{ grid-template-columns: 1fr; } .rowspan2{ grid-column: auto; } textarea{ min-height: 300px; } .meta{ justify-content:flex-start; } }
+```
+
+## app.js
+
+```javascript
+const $ = (id) => document.getElementById(id);
+let currentTone = "neutral";
+
+function setStatus(id, msg, cls = "", ms = 0) {
+  const el = $(id);
+  if (!el) return;
+  el.className = `status ${cls}`.trim();
+  el.textContent = msg;
+  if (ms > 0) setTimeout(() => { el.textContent = ""; el.className = "status"; }, ms);
+}
+
+function todayCH() {
+  const d = new Date();
+  return d.toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric" });
+}
+
+function toneLabel(tone) {
+  if (tone === "happy") return "Wertschätzend";
+  if (tone === "grumpy") return "Deutlich, aber höflich";
+  return "Sachlich";
+}
+
+function toneIntro() {
+  if (currentTone === "happy") {
+    return "Besten Dank vorab für die Prüfung dieses Anliegens.";
+  }
+  if (currentTone === "grumpy") {
+    return "Auch wenn die Bestreitung einer derartigen Forderung unnötig aufwändig erscheint, nehme ich hierzu formell Stellung.";
+  }
+  return "Hiermit bestreite ich die mir zugestellte Umtriebsentschädigung vollumfänglich.";
+}
+
+function toneClosing() {
+  if (currentTone === "happy") {
+    return "Ich danke Ihnen im Voraus für die Prüfung und die schriftliche Bestätigung der Annullierung.";
+  }
+  if (currentTone === "grumpy") {
+    return "Ich danke Ihnen für die formelle Prüfung und erwarte die schriftliche Bestätigung der Annullierung.";
+  }
+  return "Ich fordere daher die vollständige Annullierung der Forderung und eine entsprechende schriftliche Bestätigung.";
+}
+
+function updateSummary() {
+  const plate = $("plate").value.trim() || "—";
+  const eventDate = $("eventDate").value.trim();
+  const eventTime = $("eventTime").value.trim();
+  const location = $("location").value.trim() || "—";
+
+  $("sumPlate").textContent = plate;
+  $("sumDateTime").textContent = (eventDate || eventTime) ? [eventDate, eventTime].filter(Boolean).join(" / ") : "—";
+  $("sumLocation").textContent = location;
+}
+
+function generateLetterText() {
+  const firstName = $("firstName").value.trim() || "[Vorname]";
+  const lastName = $("lastName").value.trim() || "[Nachname]";
+  const address = $("address").value.trim() || "[Adresse]";
+  const zip = $("zip").value.trim() || "[PLZ]";
+  const city = $("city").value.trim() || "[Ort]";
+  const plate = $("plate").value.trim() || "[Autokennzeichen]";
+  const eventDate = $("eventDate").value.trim() || "[Datum]";
+  const eventTime = $("eventTime").value.trim() || "[Uhrzeit]";
+  const location = $("location").value.trim() || "[Ort / Schulareal]";
+  const driverName = $("driverName").value.trim() || "[Name des Lenkers / der Lenkerin]";
+
+  const body =
+`Sehr geehrte Damen und Herren
+
+${toneIntro()}
+
+Die Forderung betrifft das Fahrzeug mit dem Kennzeichen ${plate}, angeblich parkierend am ${eventDate} um ${eventTime} auf dem Parkplatz ${location}. Fahrzeuglenker war ${driverName}.
+
+Am betreffenden Parkplatz ist keine klare und vollständige Signalisation einer Gebührenpflicht oder der entsprechenden Zahlungsmodalitäten ersichtlich. Die vorhandene Beschilderung beschränkt sich auf ein audienzrichterliches Parkverbot für unberechtigte Drittpersonen. Eine Gebührenpflicht für berechtigte Nutzer ist daraus nicht erkennbar.
+
+Nach den Grundsätzen von Treu und Glauben (Art. 2 ZGB) sowie dem Vertrauensschutz (Art. 9 BV) müssen Gebühren- oder Sanktionsregelungen für Nutzer klar und unmittelbar am Ort der Nutzung erkennbar sein. Diese Voraussetzungen sind vorliegend nicht erfüllt.
+
+Mangels klarer und rechtskonformer Signalisation bestand für mich keine Möglichkeit, eine angebliche Gebührenpflicht zu erkennen oder korrekt zu erfüllen.
+
+${toneClosing()}
+
+Freundliche Grüsse
+
+${firstName}
+
+${firstName} ${lastName}
+${address}
+${zip} ${city}
+${city}, ${todayCH()}`;
+
+  $("letterText").value = body;
+  setStatus("copyStatus", "Text aktualisiert.", "ok", 1200);
+}
+
+async function copyToClipboard() {
+  const text = $("letterText").value.trim();
+  if (!text) {
+    setStatus("copyStatus", "Bitte zuerst Text generieren.", "warn", 1600);
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    setStatus("copyStatus", "Kopiert ✓", "ok", 1200);
+  } catch {
+    try {
+      $("letterText").focus();
+      $("letterText").select();
+      const ok = document.execCommand("copy");
+      setStatus("copyStatus", ok ? "Kopiert ✓" : "Kopieren fehlgeschlagen.", ok ? "ok" : "warn", 1500);
+    } catch {
+      setStatus("copyStatus", "Kopieren fehlgeschlagen (Browserrechte).", "warn", 1800);
+    }
+  }
+}
+
+function openMail() {
+  const subject = "Bestreitung Umtriebsentschädigung";
+  const body = $("letterText").value.trim();
+  if (!body) {
+    setStatus("mailStatus", "Bitte zuerst Text generieren.", "warn", 1800);
+    return;
+  }
+  const url = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = url;
+  setStatus("mailStatus", "Mailfenster wird geöffnet…", "ok", 1500);
+}
+
+let recognition = null;
+function initDictation() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    setStatus("dictStatus", "Diktieren nicht verfügbar (Browser).", "warn");
+    $("btnDictate").disabled = true;
+    return;
+  }
+  recognition = new SpeechRecognition();
+  recognition.lang = "de-CH";
+  recognition.interimResults = true;
+  recognition.continuous = true;
+
+  let finalChunk = "";
+
+  recognition.onstart = () => {
+    $("btnDictate").disabled = true;
+    $("btnStopDictate").disabled = false;
+    setStatus("dictStatus", "Diktieren läuft…");
+  };
+  recognition.onerror = (e) => setStatus("dictStatus", `Diktierfehler: ${e.error}`, "warn");
+  recognition.onend = () => {
+    $("btnDictate").disabled = false;
+    $("btnStopDictate").disabled = true;
+    setStatus("dictStatus", "");
+    finalChunk = "";
+  };
+  recognition.onresult = (event) => {
+    let interim = "";
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const transcript = event.results[i][0].transcript;
+      if (event.results[i].isFinal) finalChunk += transcript;
+      else interim += transcript;
+    }
+    if (interim.trim()) setStatus("dictStatus", `…${interim.trim()}`);
+    if (finalChunk.trim()) {
+      insertAtCursor($("letterText"), finalChunk);
+      finalChunk = "";
+      setStatus("dictStatus", "✓ eingefügt", "ok", 700);
+    }
+  };
+}
+
+function insertAtCursor(textarea, text) {
+  const start = textarea.selectionStart ?? textarea.value.length;
+  const end = textarea.selectionEnd ?? textarea.value.length;
+  const before = textarea.value.slice(0, start);
+  const after = textarea.value.slice(end);
+  const needsSpace = before && !before.endsWith("\n") && !before.endsWith(" ") ? " " : "";
+  const insertText = needsSpace + text.trim() + " ";
+  textarea.value = before + insertText + after;
+  const newPos = (before + insertText).length;
+  textarea.focus();
+  textarea.setSelectionRange(newPos, newPos);
+}
+
+function startDictation() {
+  if (!recognition) return;
+  try { recognition.start(); } catch {}
+}
+function stopDictation() {
+  if (!recognition) return;
+  recognition.stop();
+}
+
+function resetFields() {
+  ["firstName","lastName","address","zip","city","plate","eventDate","eventTime","location","driverName"].forEach(id => $(id).value = "");
+  currentTone = "neutral";
+  document.querySelectorAll(".toneBtn").forEach(b => b.classList.remove("active"));
+  const neutralBtn = document.querySelector('.toneBtn[data-tone="neutral"]');
+  if (neutralBtn) neutralBtn.classList.add("active");
+  $("toneLabel").textContent = toneLabel("neutral");
+  $("letterText").value = "";
+  setStatus("copyStatus", "");
+  setStatus("mailStatus", "");
+  setStatus("dictStatus", "");
+  updateSummary();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".toneBtn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      currentTone = btn.dataset.tone;
+      document.querySelectorAll(".toneBtn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      $("toneLabel").textContent = toneLabel(currentTone);
+      generateLetterText();
+    });
+  });
+
+  ["plate","eventDate","eventTime","location"].forEach(id => {
+    $(id).addEventListener("input", updateSummary);
+    $(id).addEventListener("change", updateSummary);
+  });
+  updateSummary();
+
+  $("btnGenerate").addEventListener("click", generateLetterText);
+  $("btnCopy").addEventListener("click", copyToClipboard);
+  $("btnMail").addEventListener("click", openMail);
+  $("btnReset").addEventListener("click", resetFields);
+
+  initDictation();
+  $("btnDictate").addEventListener("click", startDictation);
+  $("btnStopDictate").addEventListener("click", stopDictation);
+});
+```
+
+## README.md
+
+```md
+# Textgenerator Umtriebsentschädigung
+
+Statische Web-App (GitHub Pages), die aus Personalien und Falldaten einen editierbaren Brieftext zur Bestreitung einer Umtriebsentschädigung / Parkforderung generiert.
+
+## Features
+- Vorname + Nachname getrennt
+- Tonalität per Emoji-Buttons: 😊 / 😐 / 😑
+- Live-Zusammenfassung (Kennzeichen, Datum/Uhrzeit, Ort)
+- Copy-to-Clipboard inkl. Feedback
+- „Per Outlook versenden“ via mailto (Standard-Mailclient)
+- Diktieren (Web Speech API, de-CH) – Chrome/Edge empfohlen
+
+## Struktur
+index.html
+style.css
+app.js
+README.md
+
+## Hinweise
+- Diktieren funktioniert i.d.R. nur auf HTTPS oder localhost.
+- Der Mail-Button öffnet den Standard-Mailclient.
+- Die App generiert eine Vorlage; rechtliche Feinjustierungen bitte je nach Einzelfall prüfen.
+```
