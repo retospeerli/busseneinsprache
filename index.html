@@ -1,174 +1,122 @@
-# Parkbusse / Umtriebsentschädigung – Textgenerator
-
-## index.html
-
-```html
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Textgenerator Umtriebsentschädigung</title>
-  <link rel="stylesheet" href="./style.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bestreitung Umtriebsentschädigung</title>
+<link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
-  <main class="wrap">
 
-    <header class="topbar">
-      <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <h1>Textgenerator Umtriebsentschädigung</h1>
-          <p>Offizieller Einsprache-Text gegen Umtriebsentschädigungen / Parkforderungen – editierbar & diktierbar.</p>
-        </div>
-      </div>
+<main class="wrap">
 
-      <div class="meta">
-        <span class="pill">Empfänger im Text: Sehr geehrte Damen und Herren</span>
-        <span class="pill">Vorlage: Bestreitung / Annullierung</span>
-      </div>
-    </header>
+<header class="topbar">
+<div class="brand">
+<div class="logo"></div>
+<div>
+<h1>Bestreitung Umtriebsentschädigung</h1>
+<p>Generator für Einsprache gegen Park-Umtriebsentschädigungen</p>
+</div>
+</div>
+</header>
 
-    <div class="main">
-      <div class="section">
 
-        <section class="card">
-          <h2>1) Personalien</h2>
-          <p class="desc">Vorname und Nachname werden getrennt erfasst. Unter der Grussformel erscheint automatisch nur der Vorname.</p>
+<section class="card">
 
-          <div class="formgrid">
-            <label>
-              Vorname
-              <input id="firstName" type="text" placeholder="z.B. Reto" autocomplete="given-name" />
-            </label>
+<h2>Personalien</h2>
 
-            <label>
-              Nachname
-              <input id="lastName" type="text" placeholder="z.B. Speerli" autocomplete="family-name" />
-            </label>
+<div class="formgrid">
 
-            <label class="rowspan2">
-              Adresse
-              <input id="address" type="text" placeholder="z.B. Musterstrasse 5" autocomplete="street-address" />
-            </label>
+<label>
+Vorname
+<input id="firstName" type="text">
+</label>
 
-            <label>
-              PLZ
-              <input id="zip" type="text" placeholder="z.B. 8820" autocomplete="postal-code" />
-            </label>
+<label>
+Nachname
+<input id="lastName" type="text">
+</label>
 
-            <label>
-              Ort
-              <input id="city" type="text" placeholder="z.B. Wädenswil" autocomplete="address-level2" />
-            </label>
-          </div>
+<label>
+Adresse
+<input id="address" type="text">
+</label>
 
-          <div class="hr"></div>
+<label>
+PLZ / Ort
+<input id="city" type="text">
+</label>
 
-          <h2>2) Angaben zum Vorfall</h2>
-          <p class="desc">Diese Angaben werden direkt in den Brieftext eingesetzt.</p>
+</div>
 
-          <div class="formgrid">
-            <label>
-              Autokennzeichen
-              <input id="plate" type="text" placeholder="z.B. ZH 123456" />
-            </label>
+<hr>
 
-            <label>
-              Datum
-              <input id="eventDate" type="text" placeholder="z.B. 09.02.2026" />
-            </label>
+<h2>Parkfall</h2>
 
-            <label>
-              Uhrzeit
-              <input id="eventTime" type="text" placeholder="z.B. 07:35" />
-            </label>
+<div class="formgrid">
 
-            <label>
-              Ort / Schulareal
-              <input id="location" type="text" placeholder="z.B. Parkplatz Schulhaus Untermosen" />
-            </label>
+<label>
+Autokennzeichen
+<input id="plate" type="text">
+</label>
 
-            <label class="rowspan2">
-              Fahrzeuglenker / Fahrzeuglenkerin
-              <input id="driverName" type="text" placeholder="z.B. Reto Speerli" />
-            </label>
-          </div>
+<label>
+Datum
+<input id="eventDate" type="text">
+</label>
 
-          <div class="hr"></div>
+<label>
+Uhrzeit
+<input id="eventTime" type="text">
+</label>
 
-          <h2>3) Tonalität</h2>
-          <p class="desc">Wähle den Stil der Formulierung. Immer höflich und anständig.</p>
+<label>
+Ort / Parkplatz
+<input id="location" type="text">
+</label>
 
-          <div class="toneRow" role="group" aria-label="Tonalität">
-            <button type="button" class="toneBtn" data-tone="happy" title="Wertschätzend">😊</button>
-            <button type="button" class="toneBtn active" data-tone="neutral" title="Sachlich">😐</button>
-            <button type="button" class="toneBtn" data-tone="grumpy" title="Deutlich, aber höflich">😑</button>
-            <span class="toneLabel" id="toneLabel">Sachlich</span>
-          </div>
+<label>
+Lenker / Lenkerin
+<input id="driverName" type="text">
+</label>
 
-          <div class="actions">
-            <button id="btnGenerate" type="button" class="primary">Text generieren</button>
-            <button id="btnReset" type="button" class="secondary">Zurücksetzen</button>
-          </div>
-        </section>
+</div>
 
-        <section class="card">
-          <h2>4) Brieftext</h2>
-          <p class="desc">Der Text ist frei editierbar. Kopiere ihn oder öffne den Standard-Mailclient.</p>
+<hr>
 
-          <div class="toolbar">
-            <button id="btnCopy" type="button" class="secondary">In Zwischenablage kopieren</button>
-            <button id="btnMail" type="button" class="primary">Per Outlook versenden</button>
+<h2>Tonalität</h2>
 
-            <span id="copyStatus" class="status" aria-live="polite"></span>
-            <span id="mailStatus" class="status" aria-live="polite"></span>
+<div class="toneRow">
 
-            <span class="spacer"></span>
+<button class="toneBtn active" data-tone="neutral">😐</button>
+<button class="toneBtn" data-tone="happy">😊</button>
+<button class="toneBtn" data-tone="grumpy">😑</button>
 
-            <button id="btnDictate" type="button" class="ghost">🎙️ Diktieren</button>
-            <button id="btnStopDictate" type="button" class="ghost" disabled>⏹️ Stop</button>
-            <span id="dictStatus" class="status" aria-live="polite"></span>
-          </div>
+</div>
 
-          <textarea id="letterText" spellcheck="true"
-            placeholder="Klicke auf ‚Text generieren‘. Danach kannst du hier frei editieren oder diktieren."></textarea>
+<div class="actions">
 
-          <p class="small">Tipp: Cursor ins Textfeld setzen → „Diktieren“ → Text wird am Cursor eingefügt (Chrome/Edge empfohlen).</p>
-        </section>
-      </div>
+<button id="btnGenerate" class="primary">Text generieren</button>
+<button id="btnCopy">Kopieren</button>
+<button id="btnMail">Per Outlook senden</button>
 
-      <aside class="summary" aria-label="Zusammenfassung">
-        <section class="card">
-          <h3>Zusammenfassung</h3>
+</div>
 
-          <div class="summaryline">
-            <span>Kennzeichen</span>
-            <strong id="sumPlate">—</strong>
-          </div>
+</section>
 
-          <div class="summaryline">
-            <span>Datum / Uhrzeit</span>
-            <strong id="sumDateTime">—</strong>
-          </div>
 
-          <div class="summaryline">
-            <span>Ort</span>
-            <strong id="sumLocation">—</strong>
-          </div>
+<section class="card">
 
-          <div class="hr"></div>
+<h2>Brieftext</h2>
 
-          <p class="small" style="margin:0">
-            Der Standardtext bestreitet die Umtriebsentschädigung vollumfänglich und verlangt die vollständige Annullierung.
-          </p>
-        </section>
-      </aside>
-    </div>
-  </main>
+<textarea id="letterText"></textarea>
 
-  <script src="./app.js"></script>
+</section>
+
+</main>
+
+<script src="./app.js"></script>
+
 </body>
 </html>
-```
-
