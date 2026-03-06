@@ -90,8 +90,8 @@ button:hover {
 }
 
 .time-row select {
-  width: auto;
-  min-width: 90px;
+  width: 110px;
+  min-width: 110px;
 }
 
 .time-row span {
