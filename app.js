@@ -2,21 +2,22 @@ const $ = (id) => document.getElementById(id);
 
 let tone = "neutral";
 
-document.querySelectorAll(".tone").forEach((btn) => {
-  btn.onclick = () => {
-    tone = btn.dataset.tone;
-    document.querySelectorAll(".tone").forEach((b) => b.classList.remove("active"));
-    btn.classList.add("active");
-  };
-});
-
 function pad2(value) {
   return String(value).padStart(2, "0");
+}
+
+function formatSwissDate(dateValue) {
+  if (!dateValue) return "[Datum]";
+  const [year, month, day] = dateValue.split("-");
+  return `${day}.${month}.${year}`;
 }
 
 function populateTimeSelects() {
   const hourSelect = $("eventHour");
   const minuteSelect = $("eventMinute");
+
+  hourSelect.innerHTML = "";
+  minuteSelect.innerHTML = "";
 
   for (let h = 0; h < 24; h++) {
     const option = document.createElement("option");
@@ -31,24 +32,20 @@ function populateTimeSelects() {
     option.textContent = pad2(m);
     minuteSelect.appendChild(option);
   }
-
-  const now = new Date();
-  hourSelect.value = pad2(now.getHours());
-  minuteSelect.value = pad2(now.getMinutes());
 }
 
 function setTodayAsDefaultDate() {
-  const today = new Date();
-  const yyyy = today.getFullYear();
-  const mm = pad2(today.getMonth() + 1);
-  const dd = pad2(today.getDate());
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = pad2(now.getMonth() + 1);
+  const dd = pad2(now.getDate());
   $("eventDate").value = `${yyyy}-${mm}-${dd}`;
 }
 
-function formatSwissDate(dateValue) {
-  if (!dateValue) return "[Datum]";
-  const [year, month, day] = dateValue.split("-");
-  return `${day}.${month}.${year}`;
+function setCurrentTimeAsDefault() {
+  const now = new Date();
+  $("eventHour").value = pad2(now.getHours());
+  $("eventMinute").value = pad2(now.getMinutes());
 }
 
 function toneIntro() {
@@ -97,9 +94,13 @@ function generate() {
 
   if (first) signatureLines.push(first);
   signatureLines.push("");
-  if (first || last) signatureLines.push(`${first} ${last}`.trim());
+
+  const fullName = `${first} ${last}`.trim();
+  if (fullName) signatureLines.push(fullName);
+
   if (address) signatureLines.push(address);
   if (city) signatureLines.push(city);
+
   signatureLines.push("");
   signatureLines.push(city ? `${city}, ${today}` : today);
 
@@ -139,9 +140,22 @@ function mail() {
     `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
-populateTimeSelects();
-setTodayAsDefaultDate();
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".tone").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      tone = btn.dataset.tone;
+      document.querySelectorAll(".tone").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  });
 
-$("btnGenerate").onclick = generate;
-$("btnCopy").onclick = copy;
-$("btnMail").onclick = mail;
+  populateTimeSelects();
+  setTodayAsDefaultDate();
+  setCurrentTimeAsDefault();
+
+  $("btnGenerate").addEventListener("click", generate);
+  $("btnCopy").addEventListener("click", copy);
+  $("btnMail").addEventListener("click", mail);
+
+  generate();
+});
