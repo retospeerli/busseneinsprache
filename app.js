@@ -1,61 +1,115 @@
-const $ = id => document.getElementById(id)
+const $ = (id) => document.getElementById(id);
 
-let tone = "neutral"
+let tone = "neutral";
 
-document.querySelectorAll(".tone").forEach(btn=>{
-btn.onclick=()=>{
-tone = btn.dataset.tone
+document.querySelectorAll(".tone").forEach((btn) => {
+  btn.onclick = () => {
+    tone = btn.dataset.tone;
+    document.querySelectorAll(".tone").forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+  };
+});
 
-document.querySelectorAll(".tone").forEach(b=>b.classList.remove("active"))
-btn.classList.add("active")
-}
-})
-
-
-function toneIntro(){
-
-if(tone==="happy")
-return "Besten Dank vorab für die Prüfung dieses Anliegens."
-
-if(tone==="grumpy")
-return "Auch wenn eine solche Bestreitung unnötig aufwändig erscheint, nehme ich hierzu formell Stellung."
-
-return "Hiermit bestreite ich die mir zugestellte Umtriebsentschädigung vollumfänglich."
+function pad2(value) {
+  return String(value).padStart(2, "0");
 }
 
+function populateTimeSelects() {
+  const hourSelect = $("eventHour");
+  const minuteSelect = $("eventMinute");
 
-function toneClosing(){
+  for (let h = 0; h < 24; h++) {
+    const option = document.createElement("option");
+    option.value = pad2(h);
+    option.textContent = pad2(h);
+    hourSelect.appendChild(option);
+  }
 
-if(tone==="happy")
-return "Ich danke Ihnen im Voraus für die Prüfung und die schriftliche Bestätigung der Annullierung."
+  for (let m = 0; m < 60; m++) {
+    const option = document.createElement("option");
+    option.value = pad2(m);
+    option.textContent = pad2(m);
+    minuteSelect.appendChild(option);
+  }
 
-if(tone==="grumpy")
-return "Ich danke Ihnen für die Prüfung und erwarte eine schriftliche Bestätigung der Annullierung."
-
-return "Ich fordere daher die vollständige Annullierung der Forderung und eine entsprechende schriftliche Bestätigung."
+  const now = new Date();
+  hourSelect.value = pad2(now.getHours());
+  minuteSelect.value = pad2(now.getMinutes());
 }
 
+function setTodayAsDefaultDate() {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = pad2(today.getMonth() + 1);
+  const dd = pad2(today.getDate());
+  $("eventDate").value = `${yyyy}-${mm}-${dd}`;
+}
 
-function generate(){
+function formatSwissDate(dateValue) {
+  if (!dateValue) return "[Datum]";
+  const [year, month, day] = dateValue.split("-");
+  return `${day}.${month}.${year}`;
+}
 
-const first = $("firstName").value
-const last = $("lastName").value
-const address = $("address").value
-const city = $("city").value
+function toneIntro() {
+  if (tone === "happy") {
+    return "Besten Dank vorab für die Prüfung dieses Anliegens.";
+  }
 
-const plate = $("plate").value
-const date = $("eventDate").value
-const time = $("eventTime").value
-const location = $("location").value
-const driver = $("driverName").value
+  if (tone === "grumpy") {
+    return "Auch wenn eine solche Bestreitung unnötig aufwändig erscheint, nehme ich hierzu formell Stellung.";
+  }
 
-const today = new Date().toLocaleDateString("de-CH")
+  return "Hiermit bestreite ich die mir zugestellte Umtriebsentschädigung vollumfänglich.";
+}
 
-const text = `Sehr geehrte Damen und Herren
+function toneClosing() {
+  if (tone === "happy") {
+    return "Ich danke Ihnen im Voraus für die Prüfung und die schriftliche Bestätigung der Annullierung.";
+  }
+
+  if (tone === "grumpy") {
+    return "Ich danke Ihnen für die Prüfung und erwarte eine schriftliche Bestätigung der Annullierung.";
+  }
+
+  return "Ich fordere daher die vollständige Annullierung der Forderung und eine entsprechende schriftliche Bestätigung.";
+}
+
+function generate() {
+  const first = $("firstName").value.trim();
+  const last = $("lastName").value.trim();
+  const address = $("address").value.trim();
+  const city = $("city").value.trim();
+
+  const plate = $("plate").value.trim();
+  const date = formatSwissDate($("eventDate").value);
+  const time = `${$("eventHour").value}:${$("eventMinute").value}`;
+  const location = $("location").value.trim();
+  const driver = $("driverName").value.trim();
+
+  const today = new Date().toLocaleDateString("de-CH");
+
+  const driverSentence = driver
+    ? `Fahrzeuglenker war ${driver}.`
+    : "";
+
+  const signatureLines = [];
+
+  if (first) signatureLines.push(first);
+  signatureLines.push("");
+  if (first || last) signatureLines.push(`${first} ${last}`.trim());
+  if (address) signatureLines.push(address);
+  if (city) signatureLines.push(city);
+  signatureLines.push("");
+  signatureLines.push(city ? `${city}, ${today}` : today);
+
+  const signatureBlock = signatureLines.join("\n");
+
+  const text = `Sehr geehrte Damen und Herren
 
 ${toneIntro()}
 
-Die Forderung betrifft das Fahrzeug mit dem Kennzeichen ${plate}, angeblich parkierend am ${date} um ${time} auf dem Parkplatz ${location}. Fahrzeuglenker war ${driver}.
+Die Forderung betrifft das Fahrzeug mit dem Kennzeichen ${plate || "[Autokennzeichen]"}, angeblich parkierend am ${date} um ${time} auf dem Parkplatz ${location || "[Ort / Schulareal]"}. ${driverSentence}
 
 Am betreffenden Parkplatz ist keine klare und vollständige Signalisation einer Gebührenpflicht oder der entsprechenden Zahlungsmodalitäten ersichtlich. Die vorhandene Beschilderung beschränkt sich auf ein audienzrichterliches Parkverbot für unberechtigte Drittpersonen. Eine Gebührenpflicht für berechtigte Nutzer ist daraus nicht erkennbar.
 
@@ -67,37 +121,27 @@ ${toneClosing()}
 
 Freundliche Grüsse
 
-${first}
+${signatureBlock}`;
 
-${first} ${last}
-${address}
-${city}
-
-${city}, ${today}`
-
-$("letterText").value = text
+  $("letterText").value = text;
 }
 
-
-function copy(){
-
-navigator.clipboard.writeText($("letterText").value)
-
+function copy() {
+  navigator.clipboard.writeText($("letterText").value);
 }
 
+function mail() {
+  const recipient = "sicherheit@seewache.ch";
+  const subject = "Bestreitung Umtriebsentschädigung";
+  const body = $("letterText").value;
 
-function mail(){
-
-const recipient = "sicherheit@seewache.ch"
-const subject = "Bestreitung Umtriebsentschädigung"
-const body = $("letterText").value
-
-window.location.href =
-`mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
-
+  window.location.href =
+    `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
+populateTimeSelects();
+setTodayAsDefaultDate();
 
-$("btnGenerate").onclick = generate
-$("btnCopy").onclick = copy
-$("btnMail").onclick = mail
+$("btnGenerate").onclick = generate;
+$("btnCopy").onclick = copy;
+$("btnMail").onclick = mail;
