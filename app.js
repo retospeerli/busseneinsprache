@@ -2,13 +2,13 @@ const $ = id => document.getElementById(id)
 
 let tone = "neutral"
 
-
-document.querySelectorAll(".toneBtn").forEach(btn=>{
-btn.addEventListener("click",()=>{
+document.querySelectorAll(".tone").forEach(btn=>{
+btn.onclick=()=>{
 tone = btn.dataset.tone
-document.querySelectorAll(".toneBtn").forEach(b=>b.classList.remove("active"))
+
+document.querySelectorAll(".tone").forEach(b=>b.classList.remove("active"))
 btn.classList.add("active")
-})
+}
 })
 
 
@@ -34,7 +34,6 @@ return "Ich danke Ihnen für die Prüfung und erwarte eine schriftliche Bestäti
 
 return "Ich fordere daher die vollständige Annullierung der Forderung und eine entsprechende schriftliche Bestätigung."
 }
-
 
 
 function generate(){
@@ -80,13 +79,11 @@ $("letterText").value = text
 }
 
 
-
 function copy(){
 
 navigator.clipboard.writeText($("letterText").value)
 
 }
-
 
 
 function mail(){
@@ -95,14 +92,12 @@ const recipient = "sicherheit@seewache.ch"
 const subject = "Bestreitung Umtriebsentschädigung"
 const body = $("letterText").value
 
-const url = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
-
-window.location.href = url
+window.location.href =
+`mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
 
 }
 
 
-
-$("btnGenerate").addEventListener("click",generate)
-$("btnCopy").addEventListener("click",copy)
-$("btnMail").addEventListener("click",mail)
+$("btnGenerate").onclick = generate
+$("btnCopy").onclick = copy
+$("btnMail").onclick = mail
