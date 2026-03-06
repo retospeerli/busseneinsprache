@@ -1,122 +1,76 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Bestreitung Umtriebsentschädigung</title>
-<link rel="stylesheet" href="./style.css">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Umtriebsentschädigung bestreiten</title>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-<main class="wrap">
+<div class="container">
 
-<header class="topbar">
-<div class="brand">
-<div class="logo"></div>
-<div>
 <h1>Bestreitung Umtriebsentschädigung</h1>
-<p>Generator für Einsprache gegen Park-Umtriebsentschädigungen</p>
-</div>
-</div>
-</header>
-
-
-<section class="card">
 
 <h2>Personalien</h2>
 
-<div class="formgrid">
+<label>Vorname</label>
+<input id="firstName">
 
-<label>
-Vorname
-<input id="firstName" type="text">
-</label>
+<label>Nachname</label>
+<input id="lastName">
 
-<label>
-Nachname
-<input id="lastName" type="text">
-</label>
+<label>Adresse</label>
+<input id="address">
 
-<label>
-Adresse
-<input id="address" type="text">
-</label>
+<label>PLZ / Ort</label>
+<input id="city">
 
-<label>
-PLZ / Ort
-<input id="city" type="text">
-</label>
+<h2>Parkereignis</h2>
 
-</div>
+<label>Kennzeichen</label>
+<input id="plate">
 
-<hr>
+<label>Datum</label>
+<input id="eventDate">
 
-<h2>Parkfall</h2>
+<label>Uhrzeit</label>
+<input id="eventTime">
 
-<div class="formgrid">
+<label>Ort / Parkplatz</label>
+<input id="location">
 
-<label>
-Autokennzeichen
-<input id="plate" type="text">
-</label>
-
-<label>
-Datum
-<input id="eventDate" type="text">
-</label>
-
-<label>
-Uhrzeit
-<input id="eventTime" type="text">
-</label>
-
-<label>
-Ort / Parkplatz
-<input id="location" type="text">
-</label>
-
-<label>
-Lenker / Lenkerin
-<input id="driverName" type="text">
-</label>
-
-</div>
-
-<hr>
+<label>Fahrzeuglenker</label>
+<input id="driverName">
 
 <h2>Tonalität</h2>
 
-<div class="toneRow">
+<div class="tones">
 
-<button class="toneBtn active" data-tone="neutral">😐</button>
-<button class="toneBtn" data-tone="happy">😊</button>
-<button class="toneBtn" data-tone="grumpy">😑</button>
+<button class="tone active" data-tone="neutral">😐</button>
+<button class="tone" data-tone="happy">😊</button>
+<button class="tone" data-tone="grumpy">😑</button>
 
 </div>
 
-<div class="actions">
+<br>
 
-<button id="btnGenerate" class="primary">Text generieren</button>
+<button id="btnGenerate">Text generieren</button>
 <button id="btnCopy">Kopieren</button>
-<button id="btnMail">Per Outlook senden</button>
-
-</div>
-
-</section>
-
-
-<section class="card">
+<button id="btnMail">E-Mail senden</button>
 
 <h2>Brieftext</h2>
 
 <textarea id="letterText"></textarea>
 
-</section>
+</div>
 
-</main>
-
-<script src="./app.js"></script>
+<script src="app.js"></script>
 
 </body>
 </html>
